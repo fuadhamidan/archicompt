@@ -15,7 +15,7 @@ import android.content.Context
  * ...
  */
 
-@Database(entities = [WeatherEntry::class], version = 1)
+@Database(entities = [WeatherEntry::class], version = 1, exportSchema = false)
 @TypeConverters(DateConverter::class)
 abstract class AppDatabase : RoomDatabase(){
     abstract fun weatherDao(): WeatherDao
