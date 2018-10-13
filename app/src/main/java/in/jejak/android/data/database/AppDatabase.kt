@@ -3,6 +3,7 @@ package `in`.jejak.android.data.database
 import android.arch.persistence.room.Database
 import android.arch.persistence.room.Room
 import android.arch.persistence.room.RoomDatabase
+import android.arch.persistence.room.TypeConverters
 import android.content.Context
 
 
@@ -15,6 +16,7 @@ import android.content.Context
  */
 
 @Database(entities = [WeatherEntry::class], version = 1)
+@TypeConverters(DateConverter::class)
 abstract class AppDatabase : RoomDatabase(){
     abstract fun weatherDao(): WeatherDao
 
