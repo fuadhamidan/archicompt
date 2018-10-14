@@ -29,6 +29,9 @@ class AppRepository private constructor(
         var networkData = mWeatherNetworkDataSource.mDownloadedWeatherForecasts
         networkData.observeForever { newForecastsFromNetwork ->
             mExecutors.diskIO().execute {
+                val today = DateUtils.normalizedUtcDateForToday
+                mWeatherDao.deleteOldData(today)
+                Log.d(LOG_TAG, "Values deleted")
                 // Insert our new weather data into Sunshine's database
                 mWeatherDao.bulkInsert(*newForecastsFromNetwork!!)
                 Log.d(LOG_TAG, "New values inserted")
