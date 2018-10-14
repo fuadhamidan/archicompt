@@ -64,7 +64,8 @@ object DateUtils {
          * Finally, we convert back to milliseconds. This time stamp represents today's date at
          * midnight in GMT time. We will need to account for local time zone offsets when
          * extracting this information from the database.
-         */ private val normalizedUtcMsForToday: Long
+         */
+    val normalizedUtcMsForToday: Long
         get() {
             val utcNowMillis = System.currentTimeMillis()
             val currentTimeZone = TimeZone.getDefault()

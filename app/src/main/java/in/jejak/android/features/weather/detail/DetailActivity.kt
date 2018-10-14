@@ -5,6 +5,7 @@ import `in`.jejak.android.R
 import `in`.jejak.android.data.database.WeatherEntry
 import `in`.jejak.android.databinding.ActivityWeatherDetailBinding
 import `in`.jejak.android.utilities.DateUtils
+import `in`.jejak.android.utilities.InjectorUtils
 import `in`.jejak.android.utilities.WeatherUtils
 import android.arch.lifecycle.LifecycleOwner
 import android.arch.lifecycle.Observer
@@ -57,6 +58,8 @@ class DetailActivity: AppCompatActivity(), LifecycleOwner{
                 e.printStackTrace()
             }
         }
+
+        InjectorUtils.provideRepository(this).initializeData()
     }
 
     private fun bindWeatherToUI(weatherEntry: WeatherEntry) {
