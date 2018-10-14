@@ -4,6 +4,7 @@ import `in`.jejak.android.AppExecutors
 import `in`.jejak.android.data.database.WeatherDao
 import `in`.jejak.android.data.database.WeatherEntry
 import `in`.jejak.android.data.network.WeatherNetworkDataSource
+import `in`.jejak.android.utilities.DateUtils
 import android.arch.lifecycle.LiveData
 import android.util.Log
 import java.util.*
@@ -60,7 +61,10 @@ class AppRepository private constructor(
         if (mInitialized) return
         mInitialized = true
 
-        startFetchWeatherService()
+        mExecutors.diskIO().execute {
+            if (isFetchNeeded)
+                startFetchWeatherService()
+        }
     }
 
     /**
@@ -81,7 +85,11 @@ class AppRepository private constructor(
      */
     private// TODO Finish this method when instructed
     val isFetchNeeded: Boolean
-        get() = true
+        get() {
+            val today = DateUtils.normalizedUtcDateForToday
+            val count = mWeatherDao.countAllFutureWeather(today)
+            return count < WeatherNetworkDataSource.NUM_DAYS
+        }
 
     /**
      * Network related operation
