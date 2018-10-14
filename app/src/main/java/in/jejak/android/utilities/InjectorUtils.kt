@@ -4,7 +4,9 @@ import `in`.jejak.android.AppExecutors
 import `in`.jejak.android.data.AppRepository
 import `in`.jejak.android.data.database.AppDatabase
 import `in`.jejak.android.data.network.WeatherNetworkDataSource
+import `in`.jejak.android.features.weather.detail.DetailViewModelFactory
 import android.content.Context
+import java.util.*
 
 /**
  * Created by fuado on 2018/10/13.
@@ -27,8 +29,8 @@ object InjectorUtils {
         return WeatherNetworkDataSource.getInstance(context.applicationContext, executors)
     }
 
-//    fun provideDetailViewModelFactory(context: Context, date: Date): DetailViewModelFactory {
-//        val repository = provideRepository(context.applicationContext)
-//        return DetailViewModelFactory(repository, date)
-//    }
+    fun provideDetailViewModelFactory(context: Context, date: Date): DetailViewModelFactory {
+        val repository = provideRepository(context.applicationContext)
+        return DetailViewModelFactory(repository, date)
+    }
 }

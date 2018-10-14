@@ -2,8 +2,11 @@ package `in`.jejak.android.data
 
 import `in`.jejak.android.AppExecutors
 import `in`.jejak.android.data.database.WeatherDao
+import `in`.jejak.android.data.database.WeatherEntry
 import `in`.jejak.android.data.network.WeatherNetworkDataSource
+import android.arch.lifecycle.LiveData
 import android.util.Log
+import java.util.*
 
 
 /**
@@ -41,12 +44,17 @@ class AppRepository private constructor(
             AppRepository(weatherDao, weatherNetworkDataSource, executors)
     }
 
+    fun getWeatherbyDate(date: Date): LiveData<WeatherEntry>{
+        initializeData()
+        return mWeatherDao.getWeatherByDate(date)
+    }
+
     /**
      * Creates periodic sync tasks and checks to see if an immediate sync is required. If an
      * immediate sync is required, this method will take care of making sure that sync occurs.
      */
     @Synchronized
-    fun initializeData() {
+    private fun initializeData() {
         // Only perform initialization once per app lifetime. If initialization has already been
         // performed, we have nothing to do in this method.
         if (mInitialized) return

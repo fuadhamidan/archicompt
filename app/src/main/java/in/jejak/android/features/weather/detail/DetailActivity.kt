@@ -1,6 +1,5 @@
 package `in`.jejak.android.features.weather.detail
 
-import `in`.jejak.android.AppExecutors
 import `in`.jejak.android.R
 import `in`.jejak.android.data.database.WeatherEntry
 import `in`.jejak.android.databinding.ActivityWeatherDetailBinding
@@ -37,29 +36,12 @@ class DetailActivity: AppCompatActivity(), LifecycleOwner{
         val timestamp = intent.getLongExtra(WEATHER_ID_EXTRA, -1)
         val date = DateUtils.normalizedUtcDateForToday
 
-        viewModel = ViewModelProviders.of(this).get(DetailActivityViewModel::class.java)
+        val factory = InjectorUtils.provideDetailViewModelFactory(this, date)
+
+        viewModel = ViewModelProviders.of(this, factory).get(DetailActivityViewModel::class.java)
         viewModel.weather.observe(this, Observer{
             if (it != null) bindWeatherToUI(it)
         })
-
-        AppExecutors.instance().diskIO().execute {
-            try {
-                // Pretend this is the network loading data
-                Thread.sleep(4000)
-                val today = DateUtils.normalizedUtcDateForToday
-                var pretendWeatherFromDatabase = WeatherEntry(1, 210, today, 88.0, 99.0, 71.0, 1030.0, 74.0, 5.0)
-                viewModel.weather.postValue(pretendWeatherFromDatabase)
-
-                Thread.sleep(2000)
-                pretendWeatherFromDatabase = WeatherEntry(1, 952, today, 50.0, 60.0, 46.0, 1044.0, 70.0, 100.0)
-                viewModel.weather.postValue(pretendWeatherFromDatabase)
-
-            } catch (e: InterruptedException) {
-                e.printStackTrace()
-            }
-        }
-
-        InjectorUtils.provideRepository(this).initializeData()
     }
 
     private fun bindWeatherToUI(weatherEntry: WeatherEntry) {
