@@ -1,4 +1,4 @@
-package `in`.jejak.android.data.database
+package `in`.jejak.android.data.room
 
 import android.arch.persistence.room.TypeConverter
 import java.util.*

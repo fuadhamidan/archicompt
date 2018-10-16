@@ -1,5 +1,6 @@
-package `in`.jejak.android.data.database
+package `in`.jejak.android.data.room.entity
 
+import `in`.jejak.android.data.room.RoomConfig
 import android.arch.persistence.room.Entity
 import android.arch.persistence.room.Ignore
 import android.arch.persistence.room.Index
@@ -14,15 +15,15 @@ import java.util.*
  * ...
  */
 
-@Entity(tableName = "weather", indices = [Index(value = ["date"], unique = true)])
-class WeatherEntry{
+@Entity(tableName = RoomConfig.TABLE_WEATHER, indices = [Index(value = ["date"], unique = true)])
+class WeatherEntity{
     @PrimaryKey(autoGenerate = true)
     var id: Int = 0
         private set
     var weatherIconId: Int = 0
         private set
     var date: Date? = null
-        private set
+
     var min: Double = 0.toDouble()
         private set
     var max: Double = 0.toDouble()

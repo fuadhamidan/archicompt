@@ -1,10 +1,12 @@
 package `in`.jejak.android.features.weather.detail
 
-import `in`.jejak.android.data.AppRepository
-import `in`.jejak.android.data.database.WeatherEntry
+import `in`.jejak.android.JejakinApp
+import `in`.jejak.android.data.repository.WeatherRepository
+import `in`.jejak.android.data.room.entity.WeatherEntity
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.ViewModel
 import java.util.*
+import javax.inject.Inject
 
 
 /**
@@ -16,7 +18,13 @@ import java.util.*
  */
 
 
-class DetailActivityViewModel(appRepository: AppRepository, date: Date) : ViewModel() {
-    // Weather forecast the user is looking at
-    val weather: LiveData<WeatherEntry> = appRepository.getWeatherbyDate(date)
+class DetailActivityViewModel(private val date: Date) : ViewModel(){
+    @Inject
+    lateinit var repository: WeatherRepository
+
+    init {
+        JejakinApp.appComponent.inject(this)
+    }
+
+    val weather: LiveData<WeatherEntity> = repository.getWeatherbyDate(date)
 }

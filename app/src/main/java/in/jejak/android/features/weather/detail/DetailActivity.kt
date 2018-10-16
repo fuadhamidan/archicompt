@@ -1,17 +1,16 @@
 package `in`.jejak.android.features.weather.detail
 
 import `in`.jejak.android.R
-import `in`.jejak.android.data.database.WeatherEntry
+import `in`.jejak.android.data.room.entity.WeatherEntity
 import `in`.jejak.android.databinding.ActivityWeatherDetailBinding
 import `in`.jejak.android.utilities.DateUtils
-import `in`.jejak.android.utilities.InjectorUtils
 import `in`.jejak.android.utilities.WeatherUtils
-import android.arch.lifecycle.LifecycleOwner
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.databinding.DataBindingUtil
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.util.Log
 
 /**
  * Created by fuado on 2018/10/13.
@@ -21,7 +20,7 @@ import android.support.v7.app.AppCompatActivity
  * ...
  */
 
-class DetailActivity: AppCompatActivity(), LifecycleOwner{
+class DetailActivity: AppCompatActivity(){
     private var detailBinding: ActivityWeatherDetailBinding? = null
     private lateinit var viewModel: DetailActivityViewModel
 
@@ -36,20 +35,27 @@ class DetailActivity: AppCompatActivity(), LifecycleOwner{
         val timestamp = intent.getLongExtra(WEATHER_ID_EXTRA, -1)
         val date = DateUtils.normalizedUtcDateForToday
 
-        val factory = InjectorUtils.provideDetailViewModelFactory(this, date)
+        val factory = DetailViewModelFactory(date)
 
         viewModel = ViewModelProviders.of(this, factory).get(DetailActivityViewModel::class.java)
+        //viewModel.let{ lifecycle.addObserver(it) }
         viewModel.weather.observe(this, Observer{
-            if (it != null) bindWeatherToUI(it)
+            Log.d("Kuy","onCreate Activity")
+            if (it != null){
+                bindWeatherToUI(it)
+                Log.d("Kuy","onCreate Activity not null")
+            }else {
+                Log.d("Kuy","onCreate Activity null")
+            }
         })
     }
 
-    private fun bindWeatherToUI(weatherEntry: WeatherEntry) {
+    private fun bindWeatherToUI(weatherEntity: WeatherEntity) {
         /****************
          * Weather Icon *
          */
 
-        val weatherId = weatherEntry.weatherIconId
+        val weatherId = weatherEntity.weatherIconId
         val weatherImageId = WeatherUtils.getLargeArtResourceIdForWeatherCondition(weatherId)
 
         /* Set the resource ID on the icon to display the art */
@@ -66,7 +72,7 @@ class DetailActivity: AppCompatActivity(), LifecycleOwner{
          * the date representation for the local date in local time.
          * SunshineDateUtils#getFriendlyDateString takes care of this for us.
          */
-        val localDateMidnightGmt = weatherEntry.date!!.time
+        val localDateMidnightGmt = weatherEntity.date!!.time
         val dateText = DateUtils.getFriendlyDateString(this@DetailActivity, localDateMidnightGmt, true)
         detailBinding!!.primaryInfo.date.text = dateText
 
@@ -90,7 +96,7 @@ class DetailActivity: AppCompatActivity(), LifecycleOwner{
          * High (max) temperature *
          */
 
-        val maxInCelsius = weatherEntry.max
+        val maxInCelsius = weatherEntity.max
 
         /*
          * If the user's preference for weather is fahrenheit, formatTemperature will convert
@@ -110,7 +116,7 @@ class DetailActivity: AppCompatActivity(), LifecycleOwner{
          * Low (min) temperature *
          */
 
-        val minInCelsius = weatherEntry.min
+        val minInCelsius = weatherEntity.min
         /*
          * If the user's preference for weather is fahrenheit, formatTemperature will convert
          * the temperature. This method will also append either °C or °F to the temperature
@@ -128,7 +134,7 @@ class DetailActivity: AppCompatActivity(), LifecycleOwner{
          * Humidity *
          */
 
-        val humidity = weatherEntry.humidity
+        val humidity = weatherEntity.humidity
         val humidityString = getString(R.string.format_humidity, humidity)
         val humidityA11y = getString(R.string.a11y_humidity, humidityString)
 
@@ -142,8 +148,8 @@ class DetailActivity: AppCompatActivity(), LifecycleOwner{
          * Wind speed and direction *
          */
         /* Read wind speed (in MPH) and direction (in compass degrees)*/
-        val windSpeed = weatherEntry.wind
-        val windDirection = weatherEntry.degrees
+        val windSpeed = weatherEntity.wind
+        val windDirection = weatherEntity.degrees
         val windString = WeatherUtils.getFormattedWind(this@DetailActivity, windSpeed, windDirection)
         val windA11y = getString(R.string.a11y_wind, windString)
 
@@ -155,7 +161,7 @@ class DetailActivity: AppCompatActivity(), LifecycleOwner{
         /************
          * Pressure *
          */
-        val pressure = weatherEntry.pressure
+        val pressure = weatherEntity.pressure
 
         /*
          * Format the pressure text using string resources. The reason we directly access

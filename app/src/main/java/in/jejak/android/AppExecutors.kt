@@ -41,22 +41,5 @@ class AppExecutors private constructor(
     companion object {
         fun instance(): AppExecutors = AppExecutors(Executors.newSingleThreadExecutor(), Executors.newFixedThreadPool(3), MainThreadExecutor())
 
-        /*// For Singleton instantiation
-        private val LOCK = Any()
-        private var sInstance: AppExecutors? = null
-
-        val instance: AppExecutors
-            get() {
-                if (sInstance == null) {
-                    synchronized(LOCK) {
-                        sInstance = AppExecutors(
-                            Executors.newSingleThreadExecutor(),
-                            Executors.newFixedThreadPool(3),
-                            MainThreadExecutor()
-                        )
-                    }
-                }
-                return sInstance!!
-            }*/
     }
 }

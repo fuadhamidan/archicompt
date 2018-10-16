@@ -1,5 +1,6 @@
-package `in`.jejak.android.data.database
+package `in`.jejak.android.data.room.dao
 
+import `in`.jejak.android.data.room.entity.WeatherEntity
 import android.arch.lifecycle.LiveData
 import android.arch.persistence.room.Dao
 import android.arch.persistence.room.Insert
@@ -19,10 +20,10 @@ import java.util.*
 @Dao
 interface WeatherDao{
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun bulkInsert(vararg weather: WeatherEntry)
+    fun bulkInsert(weather: List<WeatherEntity>)
 
-    @Query("SELECT * FROM weather WHERE date = :date")
-    fun getWeatherByDate(date: Date): LiveData<WeatherEntry>
+    @Query("SELECT * FROM weather WHERE date == :date")
+    fun getWeatherByDate(date: Date): LiveData<WeatherEntity>
 
     @Query("SELECT COUNT(id) FROM weather WHERE date >= :date")
     fun countAllFutureWeather(date: Date): Int
